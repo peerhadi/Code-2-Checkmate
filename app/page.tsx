@@ -1,65 +1,320 @@
-import Image from "next/image";
+'use client'
+import { Tabs, Tab } from "@mui/material"
+import * as React from 'react'
+import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined"
+import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined"
+import MapOutlinedIcon from "@mui/icons-material/MapOutlined"
+import AnalyticsOutlinedIcon from "@mui/icons-material/AnalyticsOutlined"
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
 
-export default function Home() {
+
+function CustomTabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+  const isActive = value === index;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <Box
+      role="tabpanel"
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      aria-hidden={!isActive}
+      {...other}
+      sx={{
+        position: isActive ? 'relative' : 'absolute',
+        inset: 0,
+        opacity: isActive ? 1 : 0,
+        pointerEvents: isActive ? 'auto' : 'none',
+      }}
+    >
+      <Box sx={{ p: 3 }}>
+        {children}
+      </Box>
+    </Box>
   );
 }
+
+function TabLabel({
+  icon,
+  title,
+  subtitle,
+  active,
+}: {
+  icon: React.ReactNode
+  title: string
+  subtitle: string
+  active: boolean
+}) {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 1.5,
+        textAlign: "left",
+      }}
+    >
+      <Box
+        sx={{
+          color: active ? "primary.main" : "text.secondary",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        {icon}
+      </Box>
+
+      <Box>
+        <Typography
+          sx={{
+            fontSize: 14,
+            fontWeight: 600,
+            color: active ? "primary.main" : "text.primary",
+            textTransform: 'none'
+          }}
+        >
+          {title}
+        </Typography>
+        <Typography
+          sx={{
+            fontSize: 12,
+            color: "text.secondary",
+            textTransform: 'none'
+          }}
+        >
+          {subtitle}
+        </Typography>
+      </Box>
+    </Box>
+  )
+}
+
+function a11yProps(index: number) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+function FeatureTabs() {
+  const [value, setValue] = React.useState(1)
+
+  return (
+    <Box sx={{ width: "100%" }}>
+      <Tabs
+        value={value}
+        onChange={(_, v) => setValue(v)}
+        centered
+        TabIndicatorProps={{
+          sx: {
+            height: 3,
+            borderRadius: 2,
+          },
+        }}
+        sx={{
+          minHeight: 72,
+        }}
+      >
+        <Tab
+          disableRipple
+          label={
+            <TabLabel
+              icon={<SchoolOutlinedIcon />}
+              title="Courses"
+              subtitle="Comprehensive coding courses"
+              active={value === 0}
+              {...a11yProps(0)}
+            />
+          }
+        />
+
+        <Tab
+          disableRipple
+          label={
+            <TabLabel
+              icon={<BuildOutlinedIcon />}
+              title="Problems"
+              subtitle="Difficulty-based coding problems"
+              active={value === 1}
+              {...a11yProps(1)}
+            />
+          }
+        />
+
+        <Tab
+          disableRipple
+          label={
+            <TabLabel
+              icon={<MapOutlinedIcon />}
+              title="Roadmaps"
+              subtitle="Step-by-step learning paths"
+              active={value === 2}
+              {...a11yProps(2)}
+            />
+          }
+        />
+
+        <Tab
+          disableRipple
+          label={
+            <TabLabel
+              icon={<AnalyticsOutlinedIcon />}
+              title="Gamification"
+              subtitle="Changing boredom to enjoyment"
+              active={value === 3}
+              {...a11yProps(3)}
+            />
+          }
+        />
+      </Tabs>
+      <CustomTabPanel value={value} index={0}>
+        <div className="w-full flex justify-center">
+          <Image src='/X1.png?=' width={1000} height={576} alt={'Something'} />
+        </div>
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
+
+        <div className="w-full flex justify-center">
+          <Image src='/X4.png?=' width={1000} height={576} alt={'Something'} />
+        </div>
+
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
+        <div className="w-full flex justify-center">
+          <Image src='/X3.png?=' width={1000} height={576} alt={'Something'} />
+        </div>
+      </CustomTabPanel>     <CustomTabPanel value={value} index={3}>
+        <div className="w-full flex justify-center">
+          <Image src='/X2.png?=1297' width={1000} height={576} alt={'Something'} />
+        </div>      </CustomTabPanel>
+    </Box>
+  )
+}
+export default function App() {
+  const router = useRouter();
+  return (
+    <Box sx={{ pb: 5 }}>
+
+      <Box sx={{ mt: 10, display: 'flex', gap: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Typography
+          variant='h3'
+          sx={{ fontWeight: 'bold' }}>
+          Code Your Way to
+        </Typography>
+        <Typography
+          variant="h3"
+          sx={{
+            fontWeight: 'bold',
+            background: 'linear-gradient(90deg, #ff4d8d 0%, #9b5cff 45%, #3bd6c6 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
+          Checkmate
+        </Typography>
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Typography
+          variant='body1'
+          textAlign={'center'}
+          sx={{ mt: 4, width: '560px', }}>
+          Master <b>data structures</b> and <b>algorithms</b> through <b>chess-inspired</b> challenges.
+          Solve problems, win matches, and sharpen your <b>logic—one</b> move at a time.
+        </Typography>
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ mt: 4, display: 'flex', gap: 2 }}>
+          <Button sx={{
+            background: 'linear-gradient(90deg, #ff4d8d 0%, #9b5cff 45%, #3bd6c6 100%)',
+            color: 'white',
+            p: 1.5,
+            borderRadius: 2,
+            width: '200px'
+          }} onClick={() => router.push('/sign-up')}>
+            Get Started
+          </Button>
+          <Button variant='outlined'
+            sx={{
+              p: 1.5,
+              border: '1px solid white',
+              borderRadius: 2,
+              width: '275px'
+            }} onClick={() => router.push('/sign-in')}>
+            I already have an account
+          </Button>
+
+        </Box>
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 5, flexDirection: 'column' }}>
+
+        <FeatureTabs />
+        <Chip label='Features' variant='outlined' sx={{ color: 'dodgerblue', width: '100px', borderColor: 'dodgerblue' }} />
+        <Typography variant='h6' sx={{ mt: 4, fontWeight: 'bold' }}>Powerful Ways to Enhance Your Learning Experience</Typography>
+        <Typography variant='body1' sx={{ mt: 2, maxWidth: '350px', textAlign: 'center' }}>Explore the tools that are designed to help you learn faster and achieve your goals.</Typography>
+        <FeaturesGrid />
+      </Box>
+    </Box>
+  );
+}
+
+import { Grid, Card, CardMedia, CardContent, Box, Typography, Button, Chip, } from '@mui/material';
+import Image from 'next/image';
+import { useRouter } from "next/navigation"
+
+const features = [
+  {
+    title: 'Code to Move Pieces',
+    description:
+      'Solve algorithmic challenges to unlock chess moves. Every correct solution brings you closer to checkmate.',
+    image:
+      '/Card1.png',
+  },
+  {
+    title: 'LeetCode-Style Problems',
+    description:
+      'Practice real interview-level problems covering arrays, graphs, dynamic programming, and more.',
+    image:
+      '/Card2.png',
+  },
+  {
+    title: 'Rank Up Your Chess Board',
+    description:
+      'Progress from Pawn to Grandmaster as your coding and strategic thinking improve.',
+    image:
+      '/Card3.png',
+  },
+  {
+    title: 'Battle Friends & AI',
+    description:
+      'Challenge friends or AI opponents where logic, not luck, decides the winner.',
+    image:
+      '/Card4.png',
+  },
+];
+
+function FeaturesGrid() {
+  return (
+    <Grid container spacing={4} width={'1200px'} display={'flex'} justifyContent={'center'} mt={4}>
+      {features.map((feature, index) => (
+        <Grid item xs={12} md={6} key={index}>
+          <Card sx={{ height: '100%', maxWidth: '500px' }}>
+            <CardMedia>
+              <Image src={feature.image + '?=1297'} height={180} width={500} alt={`Card${index}`} />
+            </CardMedia>
+            <CardContent sx={{background: 'rgb(30,30,30)'}}>
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                {feature.title}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {feature.description}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      ))}
+    </Grid>
+  );
+}
+
